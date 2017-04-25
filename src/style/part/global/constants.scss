@@ -1,0 +1,64 @@
+body {
+    font-family: "UndergroundCYPro";
+    font-style: normal;
+    font-weight: 400;
+    background-color: #f7f9f6;
+    font-size: 1rem;
+}
+
+.container {
+    width: 80%;
+    padding-top: 3.2rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container_learn__wrapp {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.row-flex {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+}
+.flex-center {
+    display: flex;
+    justify-content: center;
+}
+.flex-around {
+    display: flex;
+    justify-content: space-around;
+}
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.flex-vertical--center {
+    display: flex;
+    align-items: center;
+}
+
+.hidden {
+    display: none;
+}
+.show {
+    display: block;
+}
+.opacity_hid {
+    opacity: 0;
+}
+.opacity_show {
+    opacity: 1;
+}
+
+button {
+    cursor: pointer;
+}

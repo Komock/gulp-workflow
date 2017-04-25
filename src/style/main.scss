@@ -1,0 +1,17 @@
+
+
+@import "part/global/fonts";
+@import "part/global/normalize";
+@import "part/global/constants";
+
+
+@import "part/variables";
+@import "part/style";
+
+@import "../pages/first/first";
+@import "../pages/second/second";
+
+@import "../templates/footer/footer";
+@import "../templates/header/header";
+
+@import "part/media";
