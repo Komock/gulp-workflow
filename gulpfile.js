@@ -14,6 +14,7 @@ gulp.task('webserver', function () {
 });
 
 function requireTask(taskName, path, options) {
+    options = options || {};
     options.taskName = taskName;
     gulp.task(taskName, function(callback) {
         var task = require(path).call(this, options);
@@ -68,6 +69,8 @@ requireTask('watch', './tasks/watch.js', {
     fonts: 'src/**/*.*'
 });
 
-gulp.task('development', gulp.series('pug:dev', 'js:dev', 'style:dev', 'fonts:dev', 'image:dev'));
+gulp.task('development', gulp.parallel('pug:dev', 'js:dev', 'style:dev', 'fonts:dev', 'image:dev'));
 
-// gulp.task('default', ['development', 'watch', 'webserver']);
+gulp.task('default', gulp.series(
+    'clean',
+    gulp.parallel('development', 'watch', 'webserver')));

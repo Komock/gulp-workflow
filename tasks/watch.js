@@ -1,25 +1,15 @@
 'use strict';
 
-const $ = require('gulp-load-plugins')();
 const gulp = require('gulp');
+const watch = require('gulp-watch');
 
 module.exports = function(options) {
 
     return function () {
-        $.watch([options.pug], function (event, cb) {
-            gulp.start('pug:dev');
-        });
-        $.watch([options.style], function (event, cb) {
-            gulp.start('style:dev');
-        });
-        $.watch([options.js], function (event, cb) {
-            gulp.start('js:dev');
-        });
-        $.watch([options.img], function (event, cb) {
-            gulp.start('image:dev');
-        });
-        $.watch([options.fonts], function (event, cb) {
-            gulp.start('fonts:dev');
-        });
+        gulp.watch( options.pug , gulp.series('pug:dev'));
+        gulp.watch( options.js , gulp.series('js:dev'));
+        gulp.watch( options.style , gulp.series('style:dev'));
+        gulp.watch( options.img , gulp.series('image:dev'));
+        gulp.watch( options.fonts , gulp.series('fonts:dev'));
     }
 };
