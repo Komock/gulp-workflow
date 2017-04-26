@@ -68,8 +68,6 @@ requireTask('watch', './tasks/watch.js', {
     fonts: 'src/**/*.*'
 });
 
-gulp.task('development', [
-    'pug:dev', 'js:dev', 'style:dev', 'fonts:dev', 'image:dev'
-]);
+gulp.task('development', gulp.series('pug:dev', 'js:dev', 'style:dev', 'fonts:dev', 'image:dev'));
 
-gulp.task('default', ['development', 'watch', 'webserver']);
+// gulp.task('default', ['development', 'watch', 'webserver']);
