@@ -27,7 +27,7 @@ requireTask('pug:dev', './tasks/pugDev.js', {
 });
 
 requireTask('style:dev', './tasks/styleDev.js', {
-    src: 'src/**/*.scss',
+    src: 'src/**/main.scss',
     dist: 'dist/'
 });
 
@@ -37,7 +37,7 @@ requireTask('style:dev', './tasks/styleDev.js', {
 // });
 
 requireTask('js:dev', './tasks/jsDev.js', {
-    src: 'src/**/*.js',
+    src: 'src/**/main.js',
     dist: 'dist/'
 });
 
