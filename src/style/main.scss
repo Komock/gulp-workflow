@@ -1,17 +1,18 @@
 
-
-@import "part/global/fonts";
 @import "part/global/normalize";
 @import "part/global/constants";
+@import "part/global/fonts";
 
 
-@import "part/variables";
+@import "part/global/variables";
 @import "part/style";
 
 @import "../pages/first/first";
 @import "../pages/second/second";
 
-@import "../templates/footer/footer";
-@import "../templates/header/header";
+@import "../templates/components/footer/footer";
+@import "../templates/components/header/header";
+@import "../templates/components/sideMenu/side-menu";
+@import "../templates/components/navMenu/nav-menu";
 
 @import "part/media";

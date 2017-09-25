@@ -1,0 +1,124 @@
+mixin birthday-colleagues(item)
+    each val in item
+        a(href="#").birthday-colleagues
+            .users-preview.birthday-colleagues__img
+                if val.img
+                    img(src= val.img alt="#").users-preview__img.birthday-colleagues__img--item
+                else
+                    .without-photo= val.nophoto
+            .birthday-colleagues__name
+                p.birthday-colleagues__name--item= val.title
+
+mixin news-list(item)
+    each val in item
+        a(href= val.link).news-preview
+            if val.img
+                .news-preview__img--wrapp
+                    img(src= val.img).news-preview__img
+            .news-preview__content( class= val.img ? "news-preview__content--has-img" : "")
+                .news-preview__title--wrapp
+                    .news-preview__title= val.title
+                .news-preview__description--wrapp
+                    p.news-preview__description= val.description
+                .news-preview__detail
+                    .news-preview__info--wrapp
+                        span.news-preview__info.text-grey= val.date
+                        span.news-preview__info.text-grey= val.auth
+                    .news-preview__comment--wrapp
+                        .news-preview__comment
+                            .news-preview__icon.news-preview__icon--comment
+                            span.news-preview__info.text-grey= val.comment
+                        .news-preview__comment
+                            .news-preview__icon.news-preview__icon--like
+                            span.news-preview__info.text-grey= val.like
+
+mixin photo-list(item)
+    each val in item
+        .photogallery-item__wrapp
+            a(href="#photo-popup").photogallery-item
+                .photogallery-item__hover
+                    p.photogallery-item__info
+                        span.photogallery-item__icon.photogallery-item__icon--view
+                        span= val.view
+                        span.photogallery-item__icon.photogallery-item__icon--comment
+                        span= val.comment
+                        span.photogallery-item__icon.photogallery-item__icon--like
+                        span= val.like
+
+                img(src= val.img alt="#").photogallery-item__img
+
+mixin comment-list(item)
+    each val in item
+        .comment__item
+            a(href="#").comment__auth
+                .comment__img
+                    .users-preview
+                        if val.img
+                            img(src= val.img alt="#").comment__img--item
+                        else
+                            .without-photo АВ
+                .comment__auth--name.text-green= val.name
+            .comment__content
+                p.comment__text.text= val.text
+                .comment__detail
+                    .comment__date.text-grey= val.date
+                    .comment__like
+                        .comment__like--icon
+                            .like-btn
+                        .comment__like--count.text-grey= val.count
+
+mixin accaunt-list(item)
+    each val in item
+        .row.structure-accaunt__item
+            .structure-star__wrapp
+                .structure-star( class= val.active ? "structure-star--active" : "")
+            .structure-accaunt__avatar
+                img(src= val.img alt="#").structure-accaunt__avatar--img
+            .row.structure-accaunt__block
+                .structure-accaunt__about.structure-accaunt__column
+                    p.structure-accaunt__title= val.name
+                    p.structure-accaunt__content.text-green= val.position
+                    p.structure-accaunt__title= val.department
+                    p.structure-accaunt__content.text= val.depdetail
+                .structure-accaunt__contact.structure-accaunt__column
+                    .row.structure-accaunt__info--wrapp
+                        div
+                            p.structure-accaunt__label.text-grey Телефон
+                            p.structure-accaunt__info= val.phone
+                        if val.interphone
+                            div
+                                p.structure-accaunt__label.text-grey Внутрений
+                                p.structure-accaunt__info= val.interphone
+                        div.structure-accaunt__date
+                            p.structure-accaunt__label.text-grey День рождение
+                            p.structure-accaunt__info= val.date
+                    .row.structure-accaunt__info--wrapp
+                        div
+                            p.structure-accaunt__label.text-grey Мобильный телефон
+                            p.structure-accaunt__info= val.mobile
+                        div.structure-accaunt__date
+                            p.structure-accaunt__label.text-grey Город
+                            p.structure-accaunt__info= val.city
+                    div.structure-accaunt__info--wrapp
+                        p.structure-accaunt__label.text-grey Email
+                        a(href="#").structure-accaunt__email.border-dash--green= val.email
+
+mixin header-nav(item, search)
+    .header-nav
+        .header-search( class= search ? "header-search-active" : "")
+            a(href="/pages/main/main.html").header-logo.header-logo--ru
+            .header-search__input--wrapp
+                form.header-search__input--form
+                    input(type="text").header-search__input
+                    .header-search__input--btn
+            .header-search__close
+        a(href="/pages/main/main.html").header-logo.header-logo--ru
+        ul.header__list
+            each val in item
+                if val.active
+                    li
+                        a(href= val.link).header-nav__item.header-nav__item--active= val.name
+                else
+                    li
+                        a(href= val.link).header-nav__item= val.name
+        .search-btn

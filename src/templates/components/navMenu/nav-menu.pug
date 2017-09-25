@@ -1,0 +1,116 @@
+mixin second-nav(item)
+    .header-subnav__wrapp
+        .header-subnav
+            ul.header__list
+                each val in item
+                    if val.active
+                        li
+                            a(href= val.link).header-subnav__item.header-subnav__item--active= val.name
+                    else
+                        li
+                            a(href= val.link).header-subnav__item= val.name
+
+mixin guidance(item)
+    each val in item
+        .guidance__item.row
+            .guidance__img
+            .guidance__content
+                a(href="/download/test.pdf" target="_blank").text.guidance__decription= val.decription
+                p.text-grey.guidance__info= val.info
+
+mixin main-news(item)
+    each val in item
+        .main-news__item
+            a(href= val.link).main-news__link
+                if val.img
+                    img(src= val.img).main-news__img
+                .main-news__content( class= val.img ? "main-news__content--img" : "")
+                    p.main-news__title= val.title
+                    if val.text
+                        p.text.main-news__text= val.text
+                    if val.auth
+                        p.text-grey.main-news__auth= val.auth
+                    .row.main-news__info
+                        .main-news__auth.text-grey= val.date
+                        .row.v-center
+                            .main-news__icon.main-news__icon-comment
+                            .main-news__auth.text-grey= val.comment
+                            .main-news__icon.main-news__icon-like
+                            .main-news__auth.text-grey= val.like
+                    if val.labelDay
+                        .main-news-label__wrapp
+                            p.main-news-label__day= val.labelDay
+                            p.main-news-label__month= val.labelMonth
+
+mixin sidebar-filter(item)
+    .sidebar-filter
+        ul.sidebar-filter__list
+            each val in item
+                li
+                    if val.active
+                        a(href="#").sidebar-filter__item.sidebar-filter__item--active= val.name
+                    else
+                        a(href="#").sidebar-filter__item= val.name
+
+mixin history-year(item)
+    each val in item
+        .row.history__item
+            .history__year
+                p.history__year-item.text-green= val.year
+            .history__content
+                p.history__content-item.content__paragraph= val.content
+
+mixin address-table(item)
+    table.address-table
+        tr
+            td(colspan="2")
+                span.address-table__title= item.name
+        tr
+            td
+                span.address-table__subtitle Адрес:
+            td
+                span.address-table__info= item.address
+                if (item.link)
+                    p.address-table__link__wrapp
+                        a(href="#").address-table__link= item.link
+
+        tr
+            td
+                span.address__subtitle Телефон:
+            td
+                span.address-table__info= item.phone
+
+        if (item.email)
+            tr
+                td
+                    span.address__subtitle E-mail::
+                td
+                    span.address-table__link= item.email
+
+mixin vacancy(item)
+    each val in item
+        .vacancy__item
+            a(href="/pages/vacancies-detail/vacancies-detail.html").vacancy__title.text-green= val.title
+            p.vacancy__discript= val.descrip
+
+mixin directors(item)
+    each val in item
+        .directors__item
+            .directors__row
+                .users-preview
+                    img( src= val.img alt="#").users-preview__img
+                .directors__info
+                    p.directors__title= val.title
+                    p.directors__position= val.position
+            p.directors__content= val.content
+
+mixin search-result(item)
+    each val in item
+        .directors__item
+            .directors__row
+                .users-preview
+                    img( src= val.img alt="#").users-preview__img
+                .directors__info
+                    p.directors__title= val.title
+                    p.directors__position= val.position
+            p.directors__content= val.content
