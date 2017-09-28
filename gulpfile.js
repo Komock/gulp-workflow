@@ -23,8 +23,6 @@ const replace = require('gulp-replace');
 const svgSprite = require('gulp-svg-sprite');
 const gulpIf = require('gulp-if');
 const tinify = require('gulp-tinify');
-const imagemin = require('gulp-imagemin');
-
 
 const isProduction = false;
 const tinifyKey = "YOUR_API_KEY";
@@ -191,6 +189,7 @@ gulp.task('svgmin', function () {
                 $('[fill]').removeAttr('fill');
                 $('[stroke]').removeAttr('stroke');
                 $('[style]').removeAttr('style');
+                $('[viewBox]').removeAttr('viewBox');
             },
             parserOptions: { xmlMode: false }
         }))
