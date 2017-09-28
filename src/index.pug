@@ -2,16 +2,20 @@
 extends templates/layout/main-layout.pug
 
 block title
-    title Can I speak?
+    title Start project
 block link-css
     link(rel="stylesheet" type="text/css" href="style/main.css")
 
 block content
     body.index
-        .container
-            a(href = "pages/first/first.html" ) First page
-            a(href = "pages/second/second.html" ) Second page
+        .index__container
+            ul.index__list
+                li
+                    a(href = "pages/first/first.html").index__link First page
+                li
+                    a(href = "pages/second/second.html").index__link Second page
+                li
+                    a(href = "pages/third/third.html").index__link Third page
 
 
 
-    script(src="/js/main.js")

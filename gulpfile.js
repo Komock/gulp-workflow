@@ -1,12 +1,11 @@
 const $ = require('gulp-load-plugins')();
 const gulp = require('gulp');
 const sass = require('gulp-sass');
-const classPrefix = require('gulp-class-prefix');
 const cleanCSS = require('gulp-clean-css');
+const csscomb = require('gulp-csscomb');
 const cssbeautify = require('gulp-cssbeautify');
 const autoprefixer = require('gulp-autoprefixer');
 const sourcemaps = require('gulp-sourcemaps');
-const concat = require('gulp-concat');
 const notify = require("gulp-notify");
 const plumber = require('gulp-plumber');
 const debug = require('gulp-debug');
@@ -15,17 +14,24 @@ const notifier = require("node-notifier");
 const size = require('gulp-size');
 const pug = require('gulp-pug');
 const changed = require('gulp-changed');
-const cached = require('gulp-cached');
-const imagemin = require('gulp-imagemin');
 const browserSync = require('browser-sync');
 const spritesmith = require('gulp.spritesmith');
 const reload = browserSync.reload;
 const svgmin = require('gulp-svgmin');
+const cheerio = require('gulp-cheerio');
+const replace = require('gulp-replace');
+const svgSprite = require('gulp-svg-sprite');
+const gulpIf = require('gulp-if');
+const tinify = require('gulp-tinify');
+const imagemin = require('gulp-imagemin');
 
+
+const isProduction = false;
+const tinifyKey = "YOUR_API_KEY";
 
 const path = {
     css: {
-        cssSrc: 'src/style/super.scss',
+        cssSrc: 'src/style/main.scss',
         cssDist: 'dist/style/'
     },
     pug: {
@@ -33,7 +39,7 @@ const path = {
         pugDist: 'dist/'
     },
     image: {
-        imageDev: ['src/image/**/*.*', '!src/image/toSprite/*.*'],
+        imageDev: ['src/image/**/*.*', '!src/image/toSprite/*.*', '!src/image/toSpriteSVG/*.*'],
         imageDist: 'dist/image/'
     },
     fonts: {
@@ -74,12 +80,12 @@ gulp.task('css', () => {
             cascade: true
         }))
         .pipe(sourcemaps.write('.'))
+        .pipe(csscomb())
         .pipe(cssbeautify())
-        // .pipe(classPrefix('ssa-'))
         .pipe(size({
             title: 'before compress'
         }))
-        .pipe(cleanCSS({compatibility: 'ie10'}))
+        .pipe(gulpIf(isProduction, cleanCSS({compatibility: 'ie10'})))
         .pipe(size({
             title: 'after compress'
         }))
@@ -99,7 +105,7 @@ gulp.task('pug', () => {
             })
         }))
         .pipe(pug({
-            pretty: true
+            pretty: !isProduction
         }))
         .pipe(gulp.dest(path.pug.pugDist))
         .on('end', reload);
@@ -137,10 +143,10 @@ gulp.task('image', () => {
         }))
         .pipe(changed(path.image.imageDist))
         .pipe(debug({title: 'image:'}))
-        // .pipe(size({
-        //     title: 'before imagemin'
-        // }))
-        // .pipe(imagemin())
+        .pipe(gulpIf(isProduction, size({
+            title: 'before tinify'
+        })))
+        .pipe(gulpIf(isProduction, tinify(tinifyKey)))
         .pipe(size({
             title: 'images size'
         }))
@@ -150,7 +156,7 @@ gulp.task('image', () => {
 
 
 gulp.task('cleansprite', () => {
-    return del('src/image/sprites/sprite/sprite.png');
+    return del('src/image/sprites/sprite');
 });
 
 
@@ -186,7 +192,15 @@ gulp.task('svgmin', function () {
                 $('[stroke]').removeAttr('stroke');
                 $('[style]').removeAttr('style');
             },
-            parserOptions: { xmlMode: true }
+            parserOptions: { xmlMode: false }
+        }))
+        .pipe(replace('&gt;', '>'))
+        .pipe(svgSprite({
+            mode: {
+                symbol: {
+                    sprite: "sprite.svg"
+                }
+            }
         }))
         .pipe(gulp.dest('src/image/sprites/spriteSVG/'));
 });
@@ -205,6 +219,7 @@ gulp.task('clean', () => {
         });
     });
 });
+
 
 gulp.task('watch', () => {
     gulp.watch(path.watch.style, gulp.series('css'));

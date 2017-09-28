@@ -1,0 +1,29 @@
+
+.index__container {
+    width: 75%;
+    margin: {
+        top: 70px;
+        right: auto;
+        bottom: 100px;
+        left: auto;
+    }
+}
+
+.index__list {
+    display: block;
+    width: 200px;
+    margin: 0;
+    padding: 0;
+    color: $main-text;
+}
+
+.index__link {
+    color: $main-text;
+    font-weight: bold;
+    line-height: 1.5;
+    transition: color .2s;
+
+    &:hover {
+        color: #177b9a;
+    }
+}
