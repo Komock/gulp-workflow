@@ -23,6 +23,9 @@ const replace = require('gulp-replace');
 const svgSprite = require('gulp-svg-sprite');
 const gulpIf = require('gulp-if');
 const tinify = require('gulp-tinify');
+const uglify = require('gulp-uglifyjs');
+const csso = require('gulp-csso');
+const concat = require('gulp-concat');
 
 const isProduction = false;
 const tinifyKey = "YOUR_API_KEY";
@@ -40,6 +43,10 @@ const path = {
         imageDev: ['src/image/**/*.*', '!src/image/toSprite/*.*', '!src/image/toSpriteSVG/*.*'],
         imageDist: 'dist/image/'
     },
+    js: {
+        jsSrc: ['src/js/jquery.js', 'src/js/first.js', 'src/js/part/**/*.js'],
+        jsDist: 'dist/js/'
+    },
     fonts: {
         fontsDev: 'src/fonts/**/*.*',
         fontsDist: 'dist/fonts/'
@@ -47,6 +54,7 @@ const path = {
     watch: {
         style: 'src/style/**/*.scss',
         pug: 'src/**/*.pug',
+        js: 'src/**/*.js',
         fonts: 'src/fonts/**/*.*',
         image: 'src/image/**/*.*'
     },
@@ -74,7 +82,7 @@ gulp.task('css', () => {
         .pipe(debug({title: 'start-scss:'}))
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer({
-            browsers: ['last 10 versions'],
+            browsers: ['last 5 versions'],
             cascade: true
         }))
         .pipe(sourcemaps.write('.'))
@@ -83,6 +91,7 @@ gulp.task('css', () => {
         .pipe(size({
             title: 'before compress'
         }))
+        .pipe(gulpIf(isProduction, csso()))
         .pipe(gulpIf(isProduction, cleanCSS({compatibility: 'ie10'})))
         .pipe(size({
             title: 'after compress'
@@ -107,7 +116,22 @@ gulp.task('pug', () => {
         }))
         .pipe(gulp.dest(path.pug.pugDist))
         .on('end', reload);
+});
 
+gulp.task('js', () => {
+    return gulp.src(path.js.jsSrc)
+        .pipe(plumber({
+            errorHandler: notify.onError((err) => {
+                return {
+                    title: 'JS',
+                    message: err.message
+                };
+            })
+        }))
+        .pipe(concat('main.js'))
+        .pipe(gulpIf(isProduction, uglify()))
+        .pipe(gulp.dest(path.js.jsDist))
+        .pipe(reload({stream: true}));
 });
 
 gulp.task('fonts', () => {
@@ -152,11 +176,9 @@ gulp.task('image', () => {
         .pipe(reload({stream: true}));
 });
 
-
 gulp.task('cleansprite', () => {
     return del('src/image/sprites/sprite');
 });
-
 
 gulp.task('spritemade', function() {
     const spriteData =
@@ -204,7 +226,6 @@ gulp.task('svgmin', function () {
         .pipe(gulp.dest('src/image/sprites/spriteSVG/'));
 });
 
-
 gulp.task('clean', () => {
     return del(path.dist).then(() => {
         notifier.notify({
@@ -219,10 +240,10 @@ gulp.task('clean', () => {
     });
 });
 
-
 gulp.task('watch', () => {
     gulp.watch(path.watch.style, gulp.series('css'));
     gulp.watch(path.watch.pug, gulp.series('pug'));
+    gulp.watch(path.watch.js, gulp.series('js'));
     gulp.watch(path.watch.fonts, gulp.series('fonts'));
     gulp.watch(path.watch.image, gulp.series('image'));
     gulp.watch('src/image/toSprite/*.*', gulp.series('spritemade'));
@@ -230,6 +251,6 @@ gulp.task('watch', () => {
 
 gulp.task('dev', gulp.series(
     'clean',
-    gulp.parallel('pug', 'css', 'fonts',  gulp.series('sprite', 'image'))));
+    gulp.parallel('pug', 'css', 'js', 'fonts',  gulp.series('sprite', 'image'))));
 
 gulp.task('default', gulp.series('dev', gulp.parallel('watch', 'serve')));

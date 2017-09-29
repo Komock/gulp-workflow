@@ -1,232 +1,203 @@
-const htmlclean = require('gulp-htmlclean');
-const htmlImport = require('gulp-html-import');
-gulp.task('html', ()=> {
-    return gulp.src(path.html.htmlSrc)
-        .pipe(changed(path.html.htmlDist))
-        // .pipe(htmlclean())
-        // .pipe(htmlImport('src/components/'))
-        .pipe(gulp.dest(path.html.htmlDist))
-        .pipe(reload({stream: true}));
-});
+
+# Gulp workflow
+======
+Данная сборка предназначена для сборки статики в многостраничном файле
+
+Используются следующие технологии
+* [Pug](http://learn.aleksbasko.com/pages/pug/pug-syntax.html) Шаблонизатор html
+* [Scss](http://learn.aleksbasko.com/pages/css/scss-guide.html) Препроцессор css
+* [JS](http://learn.aleksbasko.com/) JavaScript
+* [SVG](http://learn.aleksbasko.com/) Изображения формата SVG
 
 
-# gulp-svg-sprite [![NPM version][npm-image]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![Build Status][travis-image]][travis-url]  [![Coverage Status][coveralls-image]][coveralls-url] [![Dependency Status][depstat-image]][depstat-url] [![Development Dependency Status][devdepstat-image]][devdepstat-url]
-===============
+## Установка
+Для успешной работы данной сборки, необходимо что бы был установлен npm и node.js
+В корневой директории проекта есть файл [package.json](http://learn.aleksbasko.com/pages/css/scss-guide.html)
+Это манифест проекта в котором указанны все зависисомти для разработки и необходимые библиотеки.
+Зависимости для разработки и работы gulp модулей находятся в "devDependencies",
+импортируемые библиотеки для работы проекта находятся в "dependencies", их необходимо подключить к проекту.
 
-is a Gulp plugin wrapping around [svg-sprite](https://github.com/jkphl/svg-sprite) which **takes a bunch of [SVG](http://www.w3.org/TR/SVG/) files**, optimizes them and bakes them into **SVG sprites** of several types:
+Установить все зависимости можно через введя команду в терминал `npm i` (убедитесь что находитесь в корневой директории проекта)
 
-*	Traditional [CSS sprites](http://en.wikipedia.org/wiki/Sprite_(computer_graphics)#Sprites_by_CSS) for use as background images,
-*	CSS sprites with **pre-defined `<view>` elements**, useful for foreground images as well,
-*	inline sprites using the **`<defs>` element**,
-*	inline sprites using the **`<symbol>` element**
-*	and [SVG stacks](http://simurai.com/blog/2012/04/02/svg-stacks).
+Так же можно добавлять новые зависимости, по одной или сразу несколько `npm i gulp gulp-sass ...`
 
+Затем просто запустить команду gulp
 
-## Features & configuration? → [svg-sprite](https://github.com/jkphl/svg-sprite)
+В данной сборке предусмотренно две версии development и production
+За переключениме версий отвечает переменная в gulpfile isProduction.
 
-This document covers only gulp specific installation and configuration aspects. For a full list of features and options, please see the [svg-sprite manual](https://github.com/jkphl/svg-sprite).
-
-
-## Usage
-
-First, install `gulp-svg-sprite` as a development dependency:
-
-```shell
-npm install --save-dev gulp-svg-sprite
-```
-
-Then, add it to your `gulpfile.js`:
-
-```javascript
-var gulp				= require('gulp'),
-svgSprite				= require('gulp-svg-sprite');
-
-gulp.src('path/to/assets/*.svg')
-	.pipe(svgSprite( /* ... Insert your configuration here ... */ ))
-	.pipe(gulp.dest('out'));
-```
-
-**NOTICE**: By default, *svg-sprite* **doesn't send any files downstream** unless you configure it. There are tons of options available — please see below for [some basic examples](#basic-example). Also, you should possibly [take care of errors](#error-handling) that might occur.
+По умаолчанию она false, и запускается версия develop.
+В версиб так же необходимо указать tinifyKey, это ключь к ресурсу по оптимизации изображений.
 
 
-## API
 
+Объект ### path
+Содержит пути к исзходным данным и пути куда помещаются отработанные данные
+`path.css.cssSrc` и `path.css.cssDist`
 
-### svgSprite(options)
+Во всех тасках используем:
+ * plumber, notify, для вывода сообщений об ошибках.
+ 
+### Serve
+ * browserSync для запуска локального сервера,
+  данную сборку можно однавременно запускать в нескольких проектах, локальный сервер будет для всех разный `localhost:3000, lockalhost:3002 ...`
+ * вызываетс я вдругих тасках для загрузки изменений без перезагрузки страницы
 
-As `options` argument you may provide a [main configuration object](https://github.com/jkphl/svg-sprite/blob/master/docs/configuration.md) as described in the *svg-sprite* manual. Configuration-wise, *svg-sprite* and *gulp-svg-sprite* differ only in one respect:
+### CSS
+Используем:
+ * компиляция scss в css
+ * sourcemap на исходные файлы scss,
+ * autoprefixer для пяти последних версий браузеров,
+ * преобразование и форматирование полученного css кода
+ 
+В версии production добавляется:
+ * csso оптимизируем css объеденяя одинаковые стили,
+ * минимизируем код, удаляя пробелы и комментарии, cleanCSS
+ 
+### Pug
+Используем:
+ * компиляция pug в html
+ 
+В версии production добавляется:
+ * сжимаем полученный html
+ 
+### JS 
+ * Файлы будут объединены в порядке указанном в gulp.src(), в нашем случае в `path.js.jsSrc`
+В версии production добавляется:
+ * сжимаем объедененный js
 
-#### ~~options.dest~~
+### Fonts
+Используем:
+ * копируем все шрифты в dist, с сохранением иерархии папок,
+ * настроенно кеширование, которое отправляет в dist только новые или измененные файлы
 
-Type: `String`
-Default value: `'.'`
+### Image
+Используем:
+ * копируем все шрифты в dist, с сохранением иерархии папок,
+ * настроенно кеширование, которое отправляет в dist только новые или измененные файлы
+ 
+В версии production добавляется:
+ * оптимизируем изображения через tinify, необходимо зарегестироваться на ресурсе [Tinypng](https://tinypng.com/) и указать в переменной tinifyKey ключь 
 
-With Gulp, there is no need to specifiy a **main output directory**, as the generated files are piped to the next step of the running task anyway. The `options.dest` value (if given) is simply ignored.
+### Clean
+ * удаляет папку dist
+ 
+### Watch
+ * Следит за изменениями в указаных директориях и запускает соответствующие таски
 
-
-## Examples
-
-
-### Basic example
-
-In this very basic example, mostly default settings will be applied to create a traditional CSS sprite (bundle of SVG sprite and CSS stylesheet).
-
-```javascript
-var gulp				= require('gulp'),
-svgSprite				= require('gulp-svg-sprite'),
-
-// Basic configuration example
-config					= {
-	mode				: {
-		css				: {		// Activate the «css» mode
-			render		: {
-				css		: true	// Activate CSS output (with default options)
-			}
-		}
-	}
-};
-
-gulp.src('**/*.svg', {cwd: 'path/to/assets'})
-	.pipe(svgSprite(config))
-	.pipe(gulp.dest('out'));
-```
-
-The following files and directories are created:
+# Структура проекта
+======
 
 ```
-out
-`-- css
-    |-- sprite.css
-    `-- svg
-        `-- sprite.css-495d2010.svg
+Src
+|-- index.pug
+|-- templates
+|-- pages
+|   |-- first
+|   |   |-- first.pug
+|   |   `-- first.scss
+|   `-- second
+|       |-- second.pug
+|       `-- second.scss
+|-- style
+|-- js
+|   `-- part
+|       |-- header.js
+|       `-- sidebar.js
+|-- libs
+|   |-- slider
+|   |   |-- slider.scss
+|   |   `-- slider.js
+|-- image
+|   |-- content
+|   |   |-- foto_1.jpg
+|   |   `-- foto_2.png
+|   `-- sprites
+|       |-- toSprite
+|       |   |-- fb.png
+|       |   |-- vk.png
+|       `-- toSpriteSVG
+|           |-- close.svg
+|           `-- user.svg
+`-- fonts
+    `-- someFonts
+        |-- someFonts.ttf
+        `-- someFonts.woff
 ```
-
-> The cryptical looking part in the SVG's file name is the result of *svg-sprite*'s cache busting feature which is enabled by default for CSS sprites. We'll turn this off in the next example.
-
-
-### More complex example
-
-The following example is a little more complex:
-
-* We'll create a **«view» CSS sprite** and a **«symbol» sprite** in one go.
-* Instead of CSS, we'll render a **Sass stylesheet** resource for the «view» sprite.
-* We'll **turn off cache busting** for the «view» sprite and create **extra CSS rules specifying each shape's dimensions**.
-* We'll **downscale the SVG shapes** to 32×32 pixels if necessary and **add 10 pixels padding** to all sides.
-* We'll keep the intermediate SVG source files.
-
-```javascript
-var gulp				= require('gulp'),
-svgSprite				= require('gulp-svg-sprite'),
-
-// More complex configuration example
-config					= {
-	shape				: {
-		dimension		: {			// Set maximum dimensions
-			maxWidth	: 32,
-			maxHeight	: 32
-		},
-		spacing			: {			// Add padding
-			padding		: 10
-		},
-		dest			: 'out/intermediate-svg'	// Keep the intermediate files
-	},
-	mode				: {
-		view			: {			// Activate the «view» mode
-			bust		: false,
-			render		: {
-				scss	: true		// Activate Sass output (with default options)
-			}
-		},
-		symbol			: true		// Activate the «symbol» mode
-	}
-};
-
-gulp.src('**/*.svg', {cwd: 'path/to/assets'})
-	.pipe(svgSprite(config))
-	.pipe(gulp.dest('out'));
-```
-
-The following files and directories are created:
+Src директория со всеми исходными файлами в ней:
+* index.pug это навигационная страница по проекту, с сылками на все страницы
+* pages содержит отдельные pug страницы файл стилей для этой страницы,
+* fonts содержит все шрифты
+* libs все подключаемые библиотеки с их js и css файлами
+* image содержит все исходные картинки; картинки для спрайтов находятся в папках toSprite и toSpriteSVG
+* js содержит все js файлы
+* templates содержит:
+    * шаблоны для страниц в папке layout,
+    * pug компоненты в папке components, вместе со стилями данного компонента
+    иногда компоненты вставляются на станицу не как готовый pug компонент, а в виде миксина, но все ровно они имеют свои отдельные стили, 
+    по этому выносим их как отдельный компонент
+    * файл mixin.pug содержит подключения всех миксинов из компонентов, 
+    и уже этот файл мы подключаем в шаблон layout.pug и будем иметь возможность обратится к любому миксину с любой страницы
 
 ```
-out
-|-- intermediate-svg
-|   |-- weather-clear.svg
-|   |-- weather-snow.svg
-|   `-- weather-storm.svg
-|-- symbol
-|   `-- svg
-|       `-- sprite.symbol.svg
-`-- view
-    |-- sprite.scss
-    `-- svg
-        `-- sprite.view.svg
+templates
+|-- layout
+|   |-- main-layout.pug
+|   `-- second-layout.pug
+|-- components
+|   |-- header
+|   |   |-- header.pug
+|   |   `-- header.scss
+|   `-- footer
+|       |-- footer.pug
+|       `-- footer.scss
+|-- mixin.pug
 ```
 
-### Error handling
+* styles содержит:
+    В файл main.scss мы импортируем все остальные scss файлы, из всех компонентов, библиотек и страниц:
 
-Errors might always happen — maybe there are some corrupted source SVG files, the default [SVGO](https://github.com/svg/svgo) plugin configuration is too aggressive or there's just an error in *svg-sprite*'s code. To make your tasks more robust, you might consider using [plumber](https://github.com/floatdrop/gulp-plumber) and adding your custom error handling:
+```scss
+/* --- global style --- */
+@import "part/global/normalize";
+@import "part/global/fonts";
+/* ------ */
 
-```javascript
-var gulp				= require('gulp'),
-svgSprite				= require('gulp-svg-sprite'),
-plumber					= require('gulp-plumber'),
-
-// Basic configuration example
-config					= {
-	mode				: {
-		css				: {
-			render		: {
-				css		: true
-			}
-		}
-	}
-};
-
-gulp.src('**/*.svg', {cwd: ''})
-	.pipe(plumber())
-	.pipe(svgSprite(config))
-		.on('error', function(error){
-			/* Do some awesome error handling ... */
-		})
-	.pipe(gulp.dest('out'));
+/* --- components style --- */
+@import "../templates/components/header/header";
+@import "../templates/components/sideMenu/side-menu";;
+/* ------ */
 ```
-
-
-#### Advanced features
-
-For more advanced features like
-
-*	[custom transformation](https://github.com/jkphl/svg-sprite/blob/master/docs/configuration.md#svg-transformations),
-*	[meta data injection](https://github.com/jkphl/svg-sprite/blob/master/docs/meta-data.md),
-*	[customizing output templates](https://github.com/jkphl/svg-sprite/blob/master/docs/templating.md) or
-*	introducing new output formats
-
-please refer to the [svg-sprite manual](https://github.com/jkphl/svg-sprite).
-
-
-Changelog
----------
-
-Please refer to the [changelog](CHANGELOG.md) for a complete release history.
-
-
-Legal
------
-Copyright © 2015 Joschi Kuphal <joschi@kuphal.net> / [@jkphl](https://twitter.com/jkphl). *svg-sprite* is licensed under the terms of the [MIT license](LICENSE.txt). The contained example SVG icons are part of the [Tango Icon Library](http://tango.freedesktop.org/Tango_Icon_Library) and belong to the Public Domain.
-
-
-[npm-url]: https://npmjs.org/package/gulp-svg-sprite
-[npm-image]: https://badge.fury.io/js/gulp-svg-sprite.png
-[npm-downloads]: https://img.shields.io/npm/dm/gulp-svg-sprite.svg
-
-[travis-url]: http://travis-ci.org/jkphl/gulp-svg-sprite
-[travis-image]: https://secure.travis-ci.org/jkphl/gulp-svg-sprite.png
-
-[coveralls-url]: https://coveralls.io/r/jkphl/gulp-svg-sprite
-[coveralls-image]: https://img.shields.io/coveralls/jkphl/gulp-svg-sprite.svg
-
-[depstat-url]: https://david-dm.org/jkphl/gulp-svg-sprite
-[depstat-image]: https://david-dm.org/jkphl/gulp-svg-sprite.svg
-[devdepstat-url]: https://david-dm.org/jkphl/gulp-svg-sprite#info=devDependencies
-[devdepstat-image]: https://david-dm.org/jkphl/gulp-svg-sprite/dev-status.svg
+ В директории part находятся scss файлы поделенные по смыслу, в index.scss стили для сервисной страницы index.pug.
+ Поскольку все стили страниц находятся в папке страницы, но могут быть общие стили которые не относятся к компонентам или элементам, то их мы выносим в страницу style.scss
+ В файле media.scss медиа запросы.
+ В дирректории global файлы для шрифтов, цветов, scss миксины, переменные, в constants.scss вспомогателные сервесные классы,
+ так же здесь помещается сетка если она используется, обычно это foundation или своя кастомная в grid.scss,
+ если используется foundation? normalize подключать ненадо.
+ В дирректории elements все стили для элементов: блоки, шрифты, ссылки, кнопки.
+    
+    
+```
+style
+|-- main.scss
+`-- part
+    |-- style.scss
+    |-- media.scss
+    |-- index.scss
+    |-- global
+    |   |-- colors.scss
+    |   |-- constants.scss
+    |   |-- fonts.scss
+    |   |-- mixins.scss
+    |   |-- variables.scss
+    |   |-- grid.scss
+    |   `-- normalize.scss
+    `-- elements
+        |-- blocks.scss
+        |-- buttons.scss
+        |-- calendar.scss
+        |-- links.scss
+        |-- lists.scss
+        |-- select.scss
+        `-- text.scss
+```

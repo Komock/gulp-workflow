@@ -1,22 +1,26 @@
 
+/* --- global style --- */
 @import "part/global/normalize";
 @import "part/global/constants";
 @import "part/global/fonts";
-
-
 @import "part/global/variables";
 @import "part/style";
+/* ------ */
 
+/* --- pages style --- */
 @import "../pages/first/first";
 @import "../pages/second/second";
+/* ------ */
 
+/* --- components style --- */
 @import "../templates/components/footer/footer";
 @import "../templates/components/header/header";
 @import "../templates/components/sideMenu/side-menu";
 @import "../templates/components/navMenu/nav-menu";
+/* ------ */
 
-/* style for services index page */
+/* --- style for services index page --- */
 @import "part/index";
-/* --- */
+/* ------ */
 
 @import "part/media";
