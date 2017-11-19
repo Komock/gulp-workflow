@@ -195,7 +195,7 @@ gulp.task('svgmin', () => {
             parserOptions: { xmlMode: false }
         }))
         .pipe($.replace('&gt;', '>'))
-        .pipe($.svg-sprite({
+        .pipe($.svgSprite({
             mode: {
                 symbol: {
                     sprite: "sprite.svg"
@@ -225,7 +225,6 @@ gulp.task('watch', () => {
     gulp.watch(path.watch.js, gulp.series('js'));
     gulp.watch(path.watch.fonts, gulp.series('fonts'));
     gulp.watch(path.watch.image, gulp.series('image'));
-    gulp.watch('src/image/toSprite/*.*', gulp.series('spritemade'));
 });
 
 gulp.task('dev', gulp.series(

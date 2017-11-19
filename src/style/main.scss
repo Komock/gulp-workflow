@@ -9,6 +9,18 @@
 @import "part/style";
 /* ------ */
 
+/* --- elements style --- */
+@import "part/elements/blocks";
+@import "part/elements/buttons";
+@import "part/elements/calendar";
+@import "part/elements/icon";
+@import "part/elements/links";
+@import "part/elements/lists";
+@import "part/elements/select";
+@import "part/elements/text";
+
+/* ------ */
+
 /* --- pages style --- */
 @import "../pages/first/first";
 @import "../pages/second/second";

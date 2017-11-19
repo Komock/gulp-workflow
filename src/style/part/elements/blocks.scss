@@ -1,10 +1,11 @@
 html {
     height: 100%;
 }
+
 body {
     position: relative;
     min-height: 100%;
-    background-color: red;
+    background-color: $color-white;
     font-family: $arial;
     font-size: 1rem;
     font-style: normal;
@@ -12,5 +13,16 @@ body {
     color: $main-text;
 }
 
+.container {
+    width: 80%;
+    margin: 5% auto;
+}
 
+.row {
+    display: flex;
+    justify-content: space-between;
+}
 
+.col-text {
+    padding-left: 35px;
+}

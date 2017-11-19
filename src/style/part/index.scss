@@ -2,11 +2,12 @@
 .index__container {
     width: 75%;
     margin: {
-        top: 70px;
+        top: 0;
         right: auto;
         bottom: 100px;
         left: auto;
     }
+    padding-top: 70px;
 }
 
 .index__list {

@@ -1,21 +1,3 @@
-html {
-  font-size: 16px;
-}
-
-h1 {
-  font-size: 3rem;
-  margin-bottom: 1.2rem;
-}
-
-h2 {
-  font-size: 1.5rem;
-}
-
-h3 {
-  font-size: 1.15rem;
-  margin-bottom: 1.2rem;
-
-}
 
 .main-word {
   border-radius: 2%;
@@ -45,6 +27,7 @@ h3 {
 .answerTrue {
   background-color: green;
 }
+
 .answerFalse {
   background-color: red;
 }
@@ -67,5 +50,18 @@ h3 {
   &.men {
     @include sprite($in);
   }
+  &.fb {
+    @include sprite($fb);
+  }
+  &.calendar {
+    @include sprite($calendar);
+  }
+  &.gdoc {
+    @include sprite($gdoc);
+  }
 }
 
+.article__image {
+  display: inline-block;
+  margin-bottom: 2.5rem;
+}
