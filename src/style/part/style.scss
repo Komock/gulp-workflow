@@ -48,3 +48,24 @@ h3 {
 .answerFalse {
   background-color: red;
 }
+
+.iconPng {
+  display: block;
+
+  &.women {
+    @include sprite($woman);
+  }
+  &.tw {
+    @include sprite($tw);
+  }
+  &.search-one {
+    @include sprite($search-one);
+  }
+  &.note {
+    @include sprite($note);
+  }
+  &.men {
+    @include sprite($in);
+  }
+}
+

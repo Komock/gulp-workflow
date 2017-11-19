@@ -1,31 +1,9 @@
 const $ = require('gulp-load-plugins')();
 const gulp = require('gulp');
-const sass = require('gulp-sass');
-const cleanCSS = require('gulp-clean-css');
-const csscomb = require('gulp-csscomb');
-const cssbeautify = require('gulp-cssbeautify');
-const autoprefixer = require('gulp-autoprefixer');
-const sourcemaps = require('gulp-sourcemaps');
-const notify = require("gulp-notify");
-const plumber = require('gulp-plumber');
-const debug = require('gulp-debug');
 const del = require('del');
 const notifier = require("node-notifier");
-const size = require('gulp-size');
-const pug = require('gulp-pug');
-const changed = require('gulp-changed');
 const browserSync = require('browser-sync');
-const spritesmith = require('gulp.spritesmith');
 const reload = browserSync.reload;
-const svgmin = require('gulp-svgmin');
-const cheerio = require('gulp-cheerio');
-const replace = require('gulp-replace');
-const svgSprite = require('gulp-svg-sprite');
-const gulpIf = require('gulp-if');
-const tinify = require('gulp-tinify');
-const uglify = require('gulp-uglifyjs');
-const csso = require('gulp-csso');
-const concat = require('gulp-concat');
 
 const isProduction = false;
 const tinifyKey = "YOUR_API_KEY";
@@ -40,15 +18,15 @@ const path = {
         pugDist: 'dist/'
     },
     image: {
-        imageDev: ['src/image/**/*.*', '!src/image/toSprite/*.*', '!src/image/toSpriteSVG/*.*'],
+        imageSrc: ['src/image/**/*.*', '!src/image/sprites/toSprite/*.*', '!src/image/sprites/toSpriteSVG/*.*'],
         imageDist: 'dist/image/'
     },
     js: {
-        jsSrc: ['src/js/jquery.js', 'src/js/first.js', 'src/js/part/**/*.js'],
+        jsSrc: ['node_modules/svg4everybody/dist/svg4everybody.js', 'node_modules/jquery/dist/jquery.js', 'src/js/first.js', 'src/js/part/**/*.js'],
         jsDist: 'dist/js/'
     },
     fonts: {
-        fontsDev: 'src/fonts/**/*.*',
+        fontsSrc: 'src/fonts/**/*.*',
         fontsDist: 'dist/fonts/'
     },
     watch: {
@@ -62,7 +40,7 @@ const path = {
 
 };
 
-gulp.task('serve', function() {
+gulp.task('serve', () => {
     browserSync.init({
         server: path.dist
     });
@@ -70,48 +48,48 @@ gulp.task('serve', function() {
 
 gulp.task('css', () => {
     return gulp.src(path.css.cssSrc)
-        .pipe(plumber({
-            errorHandler: notify.onError((err) => {
+        .pipe($.plumber({
+            errorHandler: $.notify.onError((err) => {
                 return {
                     title: 'Scss',
                     message: err.message
                 };
             })
         }))
-        .pipe(sourcemaps.init())
-        .pipe(debug({title: 'start-scss:'}))
-        .pipe(sass().on('error', sass.logError))
-        .pipe(autoprefixer({
+        .pipe($.sourcemaps.init())
+        .pipe($.debug({title: 'start-scss:'}))
+        .pipe($.sass().on('error', $.sass.logError))
+        .pipe($.autoprefixer({
             browsers: ['last 5 versions'],
             cascade: true
         }))
-        .pipe(sourcemaps.write('.'))
-        .pipe(csscomb())
-        .pipe(cssbeautify())
-        .pipe(size({
+        .pipe($.sourcemaps.write('.'))
+        .pipe($.csscomb())
+        .pipe($.cssbeautify())
+        .pipe($.size({
             title: 'before compress'
         }))
-        .pipe(gulpIf(isProduction, csso()))
-        .pipe(gulpIf(isProduction, cleanCSS({compatibility: 'ie10'})))
-        .pipe(size({
+        .pipe($.if(isProduction, $.csso()))
+        .pipe($.if(isProduction, $.cleanCss({compatibility: 'ie10'})))
+        .pipe($.size({
             title: 'after compress'
         }))
-        .pipe(debug({title: 'end-scss:'}))
+        .pipe($.debug({title: 'end-scss:'}))
         .pipe(gulp.dest(path.css.cssDist))
         .pipe(reload({stream: true}));
 });
 
 gulp.task('pug', () => {
     return gulp.src(path.pug.pugSrc)
-        .pipe(plumber({
-            errorHandler: notify.onError((err) => {
+        .pipe($.plumber({
+            errorHandler: $.notify.onError((err) => {
                 return {
                     title: 'Pug',
                     message: err.message
                 };
             })
         }))
-        .pipe(pug({
+        .pipe($.pug({
             pretty: !isProduction
         }))
         .pipe(gulp.dest(path.pug.pugDist))
@@ -120,33 +98,33 @@ gulp.task('pug', () => {
 
 gulp.task('js', () => {
     return gulp.src(path.js.jsSrc)
-        .pipe(plumber({
-            errorHandler: notify.onError((err) => {
+        .pipe($.plumber({
+            errorHandler: $.notify.onError((err) => {
                 return {
                     title: 'JS',
                     message: err.message
                 };
             })
         }))
-        .pipe(concat('main.js'))
-        .pipe(gulpIf(isProduction, uglify()))
+        .pipe($.concat('main.js'))
+        .pipe($.if(isProduction, $.uglifyjs()))
         .pipe(gulp.dest(path.js.jsDist))
         .pipe(reload({stream: true}));
 });
 
 gulp.task('fonts', () => {
-    return gulp.src(path.fonts.fontsDev)
-        .pipe(plumber({
-            errorHandler: notify.onError((err) => {
+    return gulp.src(path.fonts.fontsSrc)
+        .pipe($.plumber({
+            errorHandler: $.notify.onError((err) => {
                 return {
                     title: 'Fonts',
                     message: err.message
                 };
             })
         }))
-        .pipe(changed(path.fonts.fontsDist))
-        .pipe(debug({title: 'start-fonts:'}))
-        .pipe(size({
+        .pipe($.changed(path.fonts.fontsDist))
+        .pipe($.debug({title: 'start-fonts:'}))
+        .pipe($.size({
             title: 'fonts size'
         }))
         .pipe(gulp.dest(path.fonts.fontsDist))
@@ -154,22 +132,22 @@ gulp.task('fonts', () => {
 });
 
 gulp.task('image', () => {
-    return gulp.src(path.image.imageDev)
-        .pipe(plumber({
-            errorHandler: notify.onError((err) => {
+    return gulp.src(path.image.imageSrc)
+        .pipe($.plumber({
+            errorHandler: $.notify.onError((err) => {
                 return {
                     title: 'Image',
                     message: err.message
                 };
             })
         }))
-        .pipe(changed(path.image.imageDist))
-        .pipe(debug({title: 'image:'}))
-        .pipe(gulpIf(isProduction, size({
+        .pipe($.changed(path.image.imageDist))
+        .pipe($.debug({title: 'image:'}))
+        .pipe($.if(isProduction, $.size({
             title: 'before tinify'
         })))
-        .pipe(gulpIf(isProduction, tinify(tinifyKey)))
-        .pipe(size({
+        .pipe($.if(isProduction, $.tinify(tinifyKey)))
+        .pipe($.size({
             title: 'images size'
         }))
         .pipe(gulp.dest(path.image.imageDist))
@@ -180,18 +158,19 @@ gulp.task('cleansprite', () => {
     return del('src/image/sprites/sprite');
 });
 
-gulp.task('spritemade', function() {
+gulp.task('spritemade', () => {
     const spriteData =
         gulp.src('src/image/sprites/toSprite/*.*')
-            .pipe(spritesmith({
+            .pipe($.spritesmith({
                 imgName: 'sprite.png',
+                imgPath: '../image/sprites/sprite/sprite.png',
                 cssName: 'sprite.scss',
                 padding: 15,
                 cssFormat: 'scss',
                 algorithm: 'binary-tree'
             }));
 
-    spriteData.img.pipe(gulp.dest('src/image/sprites/sprite'));
+    spriteData.img.pipe(gulp.dest('src/image/sprites/sprite/'));
     spriteData.css.pipe(gulp.dest('src/style/part'));
 
     return spriteData;
@@ -199,24 +178,24 @@ gulp.task('spritemade', function() {
 
 gulp.task('sprite', gulp.series('cleansprite', 'spritemade'));
 
-gulp.task('svgmin', function () {
+gulp.task('svgmin', () => {
     return gulp.src('src/image/sprites/toSpriteSVG/*.svg')
-        .pipe(svgmin({
+        .pipe($.svgmin({
             js2svg: {
                 pretty: true
             }
         }))
-        .pipe(cheerio({
-            run: function($) {
+        .pipe($.cheerio({
+            run: ($) => {
                 $('[fill]').removeAttr('fill');
                 $('[stroke]').removeAttr('stroke');
                 $('[style]').removeAttr('style');
-                $('[viewBox]').removeAttr('viewBox');
+                $('[xmlns]').removeAttr('xmlns');
             },
             parserOptions: { xmlMode: false }
         }))
-        .pipe(replace('&gt;', '>'))
-        .pipe(svgSprite({
+        .pipe($.replace('&gt;', '>'))
+        .pipe($.svg-sprite({
             mode: {
                 symbol: {
                     sprite: "sprite.svg"
@@ -232,7 +211,7 @@ gulp.task('clean', () => {
             title: 'Directory dist',
             message: 'Clean Done!'
         });
-    }).catch(function () {
+    }).catch( () => {
         notifier.notify({
             title: 'Directory dist',
             message: 'Clean Failed!'
@@ -251,6 +230,6 @@ gulp.task('watch', () => {
 
 gulp.task('dev', gulp.series(
     'clean',
-    gulp.parallel('pug', 'css', 'js', 'fonts',  gulp.series('sprite', 'image'))));
+    gulp.parallel('pug', gulp.series('sprite', 'image'), 'css', 'js', 'fonts')));
 
 gulp.task('default', gulp.series('dev', gulp.parallel('watch', 'serve')));
