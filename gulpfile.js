@@ -22,7 +22,9 @@ const path = {
         imageDist: 'dist/image/'
     },
     js: {
-        jsSrc: ['node_modules/svg4everybody/dist/svg4everybody.js', 'node_modules/jquery/dist/jquery.js', 'src/js/first.js', 'src/js/part/**/*.js'],
+        // jsSrc: ['node_modules/svg4everybody/dist/svg4everybody.js', 'node_modules/jquery/dist/jquery.js', 'src/js/first.js', 'src/js/part/**/*.js'],
+        // if node_modules in your dir
+        jsSrc: ['src/js/first.js', 'src/js/part/**/*.js'],
         jsDist: 'dist/js/'
     },
     fonts: {
