@@ -1,3 +1,5 @@
 /node_modules
 /.idea
 /dist
+/src/image/sprites/sprite
+/src/image/sprites/spriteSVG
