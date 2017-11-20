@@ -36,7 +36,11 @@ const path = {
         pug: 'src/**/*.pug',
         js: 'src/**/*.js',
         fonts: 'src/fonts/**/*.*',
-        image: 'src/image/**/*.*'
+        image: {
+            image: ['src/image/**/*.*', '!src/image/sprites/toSprite/*.*', '!src/image/sprites/toSpriteSVG/*.*'],
+            sprite: 'src/image/sprites/toSprite/*.+(jpg|jpeg|png)',
+            spriteSVG: 'src/image/sprites/toSpriteSVG/*.svg'
+        }
     },
     dist: 'dist'
 
@@ -207,6 +211,12 @@ gulp.task('svgmin', () => {
         .pipe(gulp.dest('src/image/sprites/spriteSVG/'));
 });
 
+gulp.task('cleanspriteSVG', () => {
+    return del('src/image/sprites/spriteSVG');
+});
+
+gulp.task('spriteSVG', gulp.series('cleanspriteSVG', 'svgmin'));
+
 gulp.task('clean', () => {
     return del(path.dist).then(() => {
         notifier.notify({
@@ -226,11 +236,13 @@ gulp.task('watch', () => {
     gulp.watch(path.watch.pug, gulp.series('pug'));
     gulp.watch(path.watch.js, gulp.series('js'));
     gulp.watch(path.watch.fonts, gulp.series('fonts'));
-    gulp.watch(path.watch.image, gulp.series('image'));
+    gulp.watch(path.watch.image.sprite, gulp.series('sprite'));
+    gulp.watch(path.watch.image.spriteSVG, gulp.series('spriteSVG'));
+    gulp.watch(path.watch.image.image, gulp.series('image'));
 });
 
 gulp.task('dev', gulp.series(
     'clean',
-    gulp.parallel('pug', gulp.series('sprite', 'image'), 'css', 'js', 'fonts')));
+    gulp.parallel('pug', 'css', gulp.series('sprite', 'spriteSVG', 'image'), 'js', 'fonts')));
 
 gulp.task('default', gulp.series('dev', gulp.parallel('watch', 'serve')));
