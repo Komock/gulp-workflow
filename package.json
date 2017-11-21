@@ -9,6 +9,9 @@
   "author": "Aleks Basko",
   "license": "ISC",
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
     "browser-sync": "^2.18.13",
     "del": "^3.0.0",
     "gulp": "gulpjs/gulp#4.0",
@@ -35,7 +38,12 @@
     "gulp-tinify": "^1.0.2",
     "gulp-uglifyjs": "^0.6.2",
     "gulp.spritesmith": "^6.5.1",
-    "node-notifier": "^5.1.2"
+    "gulplog": "^1.0.0",
+    "node-notifier": "^5.1.2",
+    "swiper": "^4.0.6",
+    "vinyl-named": "^1.1.0",
+    "webpack": "^3.8.1",
+    "webpack-stream": "^4.0.0"
   },
   "dependencies": {
     "jquery": "^3.2.1",
